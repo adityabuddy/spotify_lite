@@ -1,5 +1,5 @@
 from database import engine, Base
-import models  # This line is crucial! It imports your models and registers them with Base
+import models  # This line  imports our models and registers them with Base
 
 def create_all_tables():
     Base.metadata.create_all(bind=engine)
