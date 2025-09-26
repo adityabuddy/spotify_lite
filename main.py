@@ -104,3 +104,29 @@ def list_playlists_by_user(user_id: int, db: Session = Depends(get_db)):
     """
     playlists = db.query(models.Playlist).filter(models.Playlist.user_id == user_id).all()
     return playlists
+
+# --- Endpoints for Users ---
+@app.post("/users", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """
+    Create a new user.
+    """
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    new_user = models.User(username=user.username, email=user.email)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+@app.get("/users/{user_id}", response_model=schemas.User)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    """
+    Get details of a specific user by ID.
+    """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
