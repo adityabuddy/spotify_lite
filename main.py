@@ -5,7 +5,7 @@ from typing import List, Optional
 import models, schemas
 from database import SessionLocal, engine
 
-# Create all tables in the database
+# Creating all tables in the database
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
